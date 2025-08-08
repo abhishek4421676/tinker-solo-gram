@@ -1,48 +1,68 @@
-import { useEffect, useState } from "react";
+import React from 'react';
 
-export default function Messages() {
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    const users = ["TravelBug", "FoodieQueen", "LaughMaster"];
-    const texts = [
-      "OMG this is epic 😂",
-      "Let's collab!",
-      "You're Insta famous now 😎",
-      "🔥🔥🔥"
-    ];
-
-    const interval = setInterval(() => {
-      const msg = {
-        id: Date.now(),
-        user: users[Math.floor(Math.random() * users.length)],
-        text: texts[Math.floor(Math.random() * texts.length)],
-        time: "now"
-      };
-      setMessages((prev) => [msg, ...prev.slice(0, 9)]);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+const Messages = ({ user }) => {
+  const messages = [
+    {
+      id: 1,
+      sender: 'Sarah Wilson',
+      preview: 'Hey! Loved your latest post!',
+      time: '2m ago',
+      online: true
+    },
+    {
+      id: 2,
+      sender: 'Mike Johnson',
+      preview: 'Thanks for the follow back!',
+      time: '15m ago',
+      online: false
+    },
+    {
+      id: 3,
+      sender: 'Emma Davis',
+      preview: 'Your photography is amazing!',
+      time: '1h ago',
+      online: true
+    },
+    {
+      id: 4,
+      sender: 'Alex Chen',
+      preview: 'Can you share your camera settings?',
+      time: '2h ago',
+      online: false
+    },
+    {
+      id: 5,
+      sender: 'Lisa Brown',
+      preview: 'Great content as always!',
+      time: '3h ago',
+      online: true
+    }
+  ];
 
   return (
     <div className="messages-container">
-      <div className="feed-header">
-        <h2 className="feed-title">Messages</h2>
+      <div className="messages-header">
+        <h2 className="messages-title">Messages</h2>
+        <p className="messages-subtitle">Connect with your friends</p>
       </div>
       
-      {messages.map((message) => (
-        <div key={message.id} className="message-item">
-          <div className="message-header">
+      <div className="messages-list">
+        {messages.map(message => (
+          <div key={message.id} className="message-item">
             <div className="message-avatar">
-              {message.user.charAt(0)}
+              {message.sender.charAt(0)}
             </div>
-            <div className="message-sender">{message.user}</div>
+            <div className="message-content">
+              <div className="message-sender">{message.sender}</div>
+              <div className="message-preview">{message.preview}</div>
+            </div>
             <div className="message-time">{message.time}</div>
+            <div className={`message-status ${message.online ? '' : 'offline'}`}></div>
           </div>
-          <div className="message-content">{message.text}</div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default Messages;

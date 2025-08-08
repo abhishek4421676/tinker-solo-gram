@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { authAPI } from "../services/api";
+import React, { useState } from "react";
 
 export default function Auth({ onLogin }) {
+  console.log('Auth component rendering');
+  
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
@@ -14,6 +15,7 @@ export default function Auth({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Auth form submitted');
     setError("");
     setLoading(true);
 
@@ -24,26 +26,20 @@ export default function Auth({ onLogin }) {
         return;
       }
 
-      let response;
-      if (isLogin) {
-        response = await authAPI.login(formData.username, formData.password);
-      } else {
-        response = await authAPI.register(formData.username, formData.email, formData.password);
-      }
+      // Simulate authentication
+      setTimeout(() => {
+        const userData = {
+          username: formData.username,
+          email: formData.email || `${formData.username}@example.com`
+        };
+        
+        console.log('Auth successful, userData:', userData);
+        onLogin(userData);
+        setLoading(false);
+      }, 1000);
 
-      // Store user data and token
-      const userData = {
-        username: response.user.username,
-        email: response.user.email
-      };
-      
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('token', response.token);
-      
-      onLogin(userData);
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -134,7 +130,7 @@ export default function Auth({ onLogin }) {
             disabled={loading}
           >
             {loading ? (
-              <span className="loading">Loading...</span>
+              <span className="auth-loading">Loading...</span>
             ) : (
               isLogin ? "Sign In" : "Create Account"
             )}
@@ -145,6 +141,7 @@ export default function Auth({ onLogin }) {
           <p>
             {isLogin ? "Don't have an account?" : "Already have an account?"}
             <button
+              type="button"
               className="auth-toggle-btn"
               onClick={() => {
                 setIsLogin(!isLogin);

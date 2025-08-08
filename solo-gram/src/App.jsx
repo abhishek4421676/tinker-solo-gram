@@ -1,64 +1,92 @@
-import { useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
-import Feed from "./components/Feed";
-import Profile from "./components/Profile";
-import Notifications from "./components/Notifications";
-import Messages from "./components/Messages";
-import Insights from "./components/Insights";
-import Create from "./components/Create";
-import Auth from "./components/Auth";
-import "./styles.css";
+import React, { useState, useEffect } from 'react';
+import './styles.css';
+import Navbar from './components/Navbar';
+import Feed from './components/Feed';
+import Profile from './components/Profile';
+import Notifications from './components/Notifications';
+import Messages from './components/Messages';
+import Insights from './components/Insights';
+import Create from './components/Create';
+import Auth from './components/Auth';
 
-export default function App() {
-  const [currentPage, setCurrentPage] = useState("Home");
+function App() {
+  const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
+    // Check if user is saved in localStorage
+    const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
+    console.log('App mounted, user:', user);
   }, []);
 
   const handleLogin = (userData) => {
+    console.log('Login successful:', userData);
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
+    console.log('Logout');
     setUser(null);
-    localStorage.removeItem("user");
+    localStorage.removeItem('user');
   };
 
-  if (!user) {
-    return <Auth onLogin={handleLogin} />;
-  }
-
   const renderPage = () => {
+    console.log('Rendering page:', currentPage);
     switch (currentPage) {
-      case "Home":
+      case 'home':
         return <Feed user={user} />;
-      case "Create":
-        return <Create user={user} />;
-      case "Profile":
+      case 'profile':
         return <Profile user={user} setPage={setCurrentPage} />;
-      case "Notifications":
+      case 'notifications':
         return <Notifications user={user} />;
-      case "Messages":
-        return <Messages user={user} />;
-      case "Insights":
+      case 'reels':
+        return (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: 'calc(100vh - 0px)',
+            color: 'var(--text-secondary)',
+            fontSize: '2rem',
+            fontWeight: 700,
+            textAlign: 'center'
+          }}>
+            coming soon (never)
+          </div>
+        );
+      case 'insights':
         return <Insights user={user} />;
+      case 'create':
+        return <Create user={user} />;
       default:
         return <Feed user={user} />;
     }
   };
 
+  // Show auth page if user is not logged in
+  if (!user) {
+    console.log('No user, showing Auth component');
+    return <Auth onLogin={handleLogin} />;
+  }
+
+  console.log('User logged in, showing main app');
   return (
     <div className="app-container">
-      <Navbar setPage={setCurrentPage} currentPage={currentPage} onLogout={handleLogout} />
-      <main className="main-content">
+      <Navbar 
+        currentPage={currentPage} 
+        onPageChange={setCurrentPage}
+        onLogout={handleLogout}
+      />
+      <main className={`main-content ${currentPage}`}>
         {renderPage()}
       </main>
     </div>
   );
 }
+
+export default App;

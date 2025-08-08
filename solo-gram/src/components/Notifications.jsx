@@ -1,51 +1,66 @@
-import { useEffect, useState } from "react";
+import React from 'react';
 
-export default function Notifications() {
-  const [notifs, setNotifs] = useState([]);
-
-  useEffect(() => {
-    const users = ["Brenda343", "FitnessGuru88", "CoderKid", "TravelBug"];
-    const actions = ["liked your photo", "started following you", "commented: 'Nice!'"];
-    const icons = ["❤️", "👥", "💬"];
-
-    const interval = setInterval(() => {
-      const randomUser = users[Math.floor(Math.random() * users.length)];
-      const randomAction = actions[Math.floor(Math.random() * actions.length)];
-      const randomIcon = icons[Math.floor(Math.random() * icons.length)];
-      
-      const newNotif = {
-        id: Date.now(),
-        user: randomUser,
-        action: randomAction,
-        icon: randomIcon,
-        time: "now"
-      };
-      
-      setNotifs((prev) => [newNotif, ...prev.slice(0, 9)]);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
+const Notifications = ({ user }) => {
+  const notifications = [
+    {
+      id: 1,
+      type: 'like',
+      message: 'Sarah liked your post',
+      time: '2m ago',
+      icon: '❤️'
+    },
+    {
+      id: 2,
+      type: 'follow',
+      message: 'Mike started following you',
+      time: '15m ago',
+      icon: '👥'
+    },
+    {
+      id: 3,
+      type: 'comment',
+      message: 'Emma commented on your post',
+      time: '1h ago',
+      icon: '💬'
+    },
+    {
+      id: 4,
+      type: 'like',
+      message: 'Alex liked your post',
+      time: '2h ago',
+      icon: '❤️'
+    },
+    {
+      id: 5,
+      type: 'follow',
+      message: 'Lisa started following you',
+      time: '3h ago',
+      icon: '👥'
+    }
+  ];
 
   return (
     <div className="notifications-container">
-      <div className="feed-header">
-        <h2 className="feed-title">Notifications</h2>
+      <div className="notifications-header">
+        <h2 className="notifications-title">Notifications</h2>
+        <p className="notifications-subtitle">Stay updated with your activity</p>
       </div>
       
-      {notifs.map((notif) => (
-        <div key={notif.id} className="notification-item">
-          <div className="notification-content">
+      <div className="notifications-list">
+        {notifications.map(notification => (
+          <div key={notification.id} className="notification-item">
             <div className="notification-icon">
-              {notif.icon}
+              {notification.icon}
             </div>
-            <div className="notification-text">
-              <strong>{notif.user}</strong> {notif.action}
+            <div className="notification-content">
+              <div className="notification-text">{notification.message}</div>
+              <div className="notification-time">{notification.time}</div>
             </div>
-            <div className="notification-time">{notif.time}</div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default Notifications;
